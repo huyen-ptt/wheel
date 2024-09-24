@@ -6,7 +6,7 @@
         <form>
           <div class="form-group">
             <label>numInputs</label>
-            <input class="form-control" v-model.number="numInputs" type="number" min="0" max="40" />
+            <input class="form-control" v-model.number="numInputs" type="number" min="0" max="40" oninput="if(this.value > 40) this.value = 40;"/>
           </div>
           <div class="form-group">
             <label>separator</label>
