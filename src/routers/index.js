@@ -5,13 +5,13 @@ import WheelPage from '@/pages/WheelPage.vue';
 const routes = [
     {
         path: "/otp",
-        name: "OtpPage",
-        component: OtpPage,
+        name: "WheelPage",
+        component: WheelPage,
     },
     {
         path: "/",
-        name: "WheelPage",
-        component: WheelPage,
+        name: "OtpPage",
+        component: OtpPage,
     },
   
 ];
