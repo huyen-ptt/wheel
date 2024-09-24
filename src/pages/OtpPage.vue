@@ -1,0 +1,118 @@
+<template>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Nhập mã OTP</h4>
+        <form>
+          <div class="form-group">
+            <label>numInputs</label>
+            <input class="form-control" v-model.number="numInputs" type="number" min="0" max="40" />
+          </div>
+          <div class="form-group">
+            <label>separator</label>
+            <input type="text" v-model="separator" class="form-control" maxlength="1" />
+          </div>
+          <div class="form-group">
+            <label>Value</label>
+            <input type="text" class="form-control" v-model="value" :maxlength="numInputs" />
+          </div>
+          <div class="form-group">
+            <label>Placeholder</label>
+            <input type="text" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="inputType">inputType</label>
+            <select id="inputType" name="inputType">
+              <option value="text">text</option>
+              <option value="number">number</option>
+              <option value="password">password</option>
+              <option value="tel">tel</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6 da-nhap">
+        <h4>Mã OTP đã nhập</h4>
+        <div class="otp-display">
+          <div class="bao" v-for="index in numInputs" :key="index">
+            <input 
+              class="duoc-nhap" 
+              maxlength="1" 
+              type="text" 
+              v-model="otpValues[index - 1]" 
+            />
+            <span v-if="index !== numInputs">{{ separator }}</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" @click="deleteOtpp">Clear</button>
+        <button type="button" class="btn btn-primary" :disabled="value.length !== numInputs" @click="getOtp">Get OTP</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from "vue";
+
+const numInputs = ref(4);
+const separator = ref('-');
+const value = ref('');
+const otpValues = ref(Array(numInputs.value).fill('')); //vdu ['', '', '', '']
+console.log(otpValues,'otpValues');
+
+// Theo dõi sự thay đổi trong value và đồng bộ với otpValues
+watch(value, (newValue) => {
+  otpValues.value = newValue.split('').slice(0, numInputs.value);
+});
+
+const deleteOtpp = () => {
+  value.value = '';
+};
+
+const getOtp = () => {
+  alert(`Mã OTP là ${value.value}`);
+};
+
+
+</script>
+
+<style scoped>
+.otp-input {
+  width: 50px;
+  text-align: center;
+  margin-bottom: 10px; 
+}
+.otp-display {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  margin-top: 20px;
+}
+.bao {
+  margin-bottom: 13px;
+}
+.otp-display span {
+  font-size: 40px;
+}
+.otp-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  width: 50px;
+  text-align: center;
+  font-size: 20px;
+}
+#inputType {
+  margin-left: 10px;
+}
+.btn-primary {
+  margin-left: 10px;
+  margin-top: 20px;
+}
+.otp-display .duoc-nhap {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 24px;
+  margin: 0 18px 0 5px;
+}
+</style>
