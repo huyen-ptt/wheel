@@ -68,7 +68,13 @@ const typeInput = ref('text')
 watch(value, (newValue) => {
   otpValues.value = newValue.split('').slice(0, numInputs.value);
 });
-
+watch(numInputs, (newValue) => {
+  if (newValue > 40) {
+    numInputs.value = 40;
+  } else if (newValue < 0) {
+    numInputs.value = 0;
+  }
+});
 const deleteOtpp = () => {
   value.value = '';
 };
