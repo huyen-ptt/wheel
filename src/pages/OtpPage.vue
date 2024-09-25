@@ -71,9 +71,7 @@ watch(value, (newValue) => {
 watch(numInputs, (newValue) => {
   if (newValue > 40) {
     numInputs.value = 40;
-  } else if (newValue < 0) {
-    numInputs.value = 0;
-  }
+  } 
 });
 const deleteOtpp = () => {
   value.value = '';
