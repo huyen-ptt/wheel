@@ -22,7 +22,7 @@
           </div>
           <div class="form-group">
             <label for="inputType">inputType</label>
-            <select id="inputType" name="inputType">
+            <select id="inputType" v-model="typeInput" name="inputType">
               <option value="text">text</option>
               <option value="number">number</option>
               <option value="password">password</option>
@@ -38,8 +38,10 @@
             <input 
               class="duoc-nhap" 
               maxlength="1" 
-              type="text" 
+              :type="typeInput" 
               v-model="otpValues[index - 1]" 
+              @input="updateValueOtp(index - 1)" 
+              @paste="handlePaste"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
@@ -59,6 +61,8 @@ const separator = ref('-');
 const value = ref('');
 const otpValues = ref(Array(numInputs.value).fill('')); //vdu ['', '', '', '']
 console.log(otpValues,'otpValues');
+console.log(value,'v');
+const typeInput = ref('text')
 
 // Theo dõi sự thay đổi trong value và đồng bộ với otpValues
 watch(value, (newValue) => {
@@ -72,8 +76,16 @@ const deleteOtpp = () => {
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
+const updateValueOtp = (index) => {
+  value.value = otpValues.value.join('');
+};
+
+const handlePaste = (event) => {
+  const pastedText = event.clipboardData.getData('text').split('');
+  otpValues.value = pastedText.slice(0, numInputs.value);// Lấy từ vị trí đầu tiên (0) đến vị trí bằng giá trị của numInputs
 
 
+};
 </script>
 
 <style scoped>
