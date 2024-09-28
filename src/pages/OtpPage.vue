@@ -6,7 +6,14 @@
         <form>
           <div class="form-group">
             <label>numInputs</label>
-            <input class="form-control" v-model.number="numInputs" type="number" min="0" max="40" oninput="if(this.value > 40) this.value = 40;"/>
+            <input
+              class="form-control"
+              v-model.number="numInputs"
+              type="number"
+              min="0"
+              max="40"
+              oninput="if(this.value > 40) this.value = 40;"
+            />
           </div>
           <div class="form-group">
             <label>separator</label>
@@ -14,7 +21,12 @@
           </div>
           <div class="form-group">
             <label>Value</label>
-            <input type="text" class="form-control" v-model="value" :maxlength="numInputs" />
+            <input
+              type="text"
+              class="form-control"
+              v-model="value"
+              :maxlength="numInputs"
+            />
           </div>
           <div class="form-group">
             <label>Placeholder</label>
@@ -35,19 +47,26 @@
         <h4>Mã OTP đã nhập</h4>
         <div class="otp-display">
           <div class="bao" v-for="index in numInputs" :key="index">
-            <input 
-              class="duoc-nhap" 
-              maxlength="1" 
-              :type="typeInput" 
-              v-model="otpValues[index - 1]" 
-              @input="updateValueOtp(index - 1)" 
+            <input
+              class="duoc-nhap"
+              maxlength="1"
+              :type="typeInput"
+              v-model="otpValues[index - 1]"
+              @input="updateValueOtp(index - 1)"
               @paste="handlePaste"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
         </div>
         <button type="button" class="btn btn-primary" @click="deleteOtpp">Clear</button>
-        <button type="button" class="btn btn-primary" :disabled="value.length !== numInputs" @click="getOtp">Get OTP</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="value.length !== numInputs"
+          @click="getOtp"
+        >
+          Get OTP
+        </button>
       </div>
     </div>
   </div>
@@ -57,24 +76,23 @@
 import { ref, watch } from "vue";
 
 const numInputs = ref(4);
-const separator = ref('-');
-const value = ref('');
-const otpValues = ref(Array(numInputs.value).fill('')); //vdu ['', '', '', '']
-console.log(otpValues,'otpValues');
-console.log(value,'v');
-const typeInput = ref('text')
+const separator = ref("-");
+const value = ref("");
+const otpValues = ref(Array(numInputs.value).fill("")); //vdu ['', '', '', '']
+console.log(otpValues, "otpValues");
+console.log(value, "v");
+const typeInput = ref("text");
 
-// Theo dõi sự thay đổi trong value và đồng bộ với otpValues
 watch(value, (newValue) => {
-  otpValues.value = newValue.split('').slice(0, numInputs.value);
+  otpValues.value = newValue.split("").slice(0, numInputs.value);
 });
 watch(numInputs, (newValue) => {
   if (newValue > 40) {
     numInputs.value = 40;
-  } 
+  }
 });
 const deleteOtpp = () => {
-  value.value = '';
+  value.value = "";
 };
 
 const getOtp = () => {
@@ -82,13 +100,25 @@ const getOtp = () => {
 };
 const updateValueOtp = (index) => {
   value.value = otpValues.value.join('');
+
+  // next
+  if (otpValues.value[index] && index < numInputs.value - 1) {
+    focusInput(index + 1);
+  }
+};
+
+
+// Hàm focus vào input chỉ định
+const focusInput = (index) => {
+  const inputs = document.querySelectorAll('.duoc-nhap');
+  if (inputs[index]) {
+    inputs[index].focus();
+  }
 };
 
 const handlePaste = (event) => {
-  const pastedText = event.clipboardData.getData('text').split('');
-  otpValues.value = pastedText.slice(0, numInputs.value);// Lấy từ vị trí đầu tiên (0) đến vị trí bằng giá trị của numInputs
-
-
+  const pastedText = event.clipboardData.getData("text").split("");
+  otpValues.value = pastedText.slice(0, numInputs.value); // Lấy từ vị trí đầu tiên (0) đến vị trí bằng giá trị của numInputs
 };
 </script>
 
@@ -96,7 +126,7 @@ const handlePaste = (event) => {
 .otp-input {
   width: 50px;
   text-align: center;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 .otp-display {
   display: grid;
