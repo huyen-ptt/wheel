@@ -2,9 +2,10 @@ import { createWebHistory, createRouter } from "vue-router";
 import OtpPage from '@/pages/OtpPage.vue';
 import WheelPage from '@/pages/WheelPage.vue';
 
+
 const routes = [
     {
-        path: "/otp",
+        path: "/wheel",
         name: "WheelPage",
         component: WheelPage,
     },
@@ -13,6 +14,7 @@ const routes = [
         name: "OtpPage",
         component: OtpPage,
     },
+    
   
 ];
 

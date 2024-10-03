@@ -98,23 +98,28 @@ const deleteOtpp = () => {
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
+
+
 const updateValueOtp = (index) => {
   value.value = otpValues.value.join('');
 
-  // next
-  if (otpValues.value[index] && index < numInputs.value - 1) {
-    focusInput(index + 1);
+  if (!otpValues.value[index] && index > 0) {
+    focusInput(index - 1);
+  }
+  
+  else if (otpValues.value[index] && index < numInputs.value - 1) {
+    focusInput(index + 1); 
   }
 };
 
-
-// Hàm focus vào input chỉ định
 const focusInput = (index) => {
   const inputs = document.querySelectorAll('.duoc-nhap');
   if (inputs[index]) {
     inputs[index].focus();
+    inputs[index].select(); // Chọn toàn bộ nội dung trong input
   }
 };
+
 
 const handlePaste = (event) => {
   const pastedText = event.clipboardData.getData("text").split("");
