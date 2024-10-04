@@ -54,6 +54,7 @@
               v-model="otpValues[index - 1]"
               @input="updateValueOtp(index - 1)"
               @paste="handlePaste"
+               @keydown.backspace="handleBackspace(index - 1, $event)"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
@@ -93,6 +94,13 @@ watch(numInputs, (newValue) => {
 });
 const deleteOtpp = () => {
   value.value = "";
+};
+const handleBackspace = (index, event) => {
+  // Chỉ lùi về ô trước đó khi ô hiện tại đang trống và nhấn Backspace
+  if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
+    focusInput(index - 1);
+    event.preventDefault(); // Ngăn chặn hành động mặc định của phím Backspace
+  }
 };
 
 const getOtp = () => {
