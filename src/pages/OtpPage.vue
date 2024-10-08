@@ -110,15 +110,16 @@ const getOtp = () => {
 
 const updateValueOtp = (index) => {
   value.value = otpValues.value.join('');
+  let length = value.value.length;
+  focusInput(length)
 
-
-  if (!otpValues.value[index] && index > 0) {
-    focusInput(index - 1);
-  }
+  // if (!otpValues.value[index] && index > 0) {
+  //   focusInput(index - 1);
+  // }
   
-  else if (otpValues.value[index] && index < numInputs.value - 1) {
-    focusInput(index + 1); 
-  }
+  // else if (otpValues.value[index] && index < numInputs.value - 1) {
+  //   focusInput(index + 1); 
+  // }
 };
 
 const focusInput = (index) => {
