@@ -105,15 +105,18 @@ const handleBackspace = (index, event) => {
 const handleKeyDown = (index, event) => {
   if (event.key === 'ArrowRight' && index < numInputs.value - 1) {
     focusInput(index + 1);
+    event.preventDefault();
   }
   if (event.key === 'ArrowLeft' && index > 0) {
     focusInput(index - 1);
+    event.preventDefault(); 
   }
   if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
     focusInput(index - 1);
     event.preventDefault(); // Ngăn chặn hành động mặc định của phím Backspace
   }
 };
+
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
@@ -140,6 +143,7 @@ const focusInput = (index) => {
     inputs[index].select(); // Chọn toàn bộ nội dung trong input
   }
 };
+
 
 
 const handlePaste = (event) => {
