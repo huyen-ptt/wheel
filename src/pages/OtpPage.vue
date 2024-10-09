@@ -55,6 +55,7 @@
               @input="updateValueOtp(index - 1)"
               @paste="handlePaste"
                @keydown.backspace="handleBackspace(index - 1, $event)"
+               @keydown="handleKeyDown(index - 1, $event)"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
@@ -96,13 +97,23 @@ const deleteOtpp = () => {
   value.value = "";
 };
 const handleBackspace = (index, event) => {
-  // Chỉ lùi về ô trước đó khi ô hiện tại đang trống và nhấn Backspace
+  if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
+    focusInput(index - 1);
+    event.preventDefault(); 
+  }
+};
+const handleKeyDown = (index, event) => {
+  if (event.key === 'ArrowRight' && index < numInputs.value - 1) {
+    focusInput(index + 1);
+  }
+  if (event.key === 'ArrowLeft' && index > 0) {
+    focusInput(index - 1);
+  }
   if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
     focusInput(index - 1);
     event.preventDefault(); // Ngăn chặn hành động mặc định của phím Backspace
   }
 };
-
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
@@ -113,9 +124,9 @@ const updateValueOtp = (index) => {
   let length = value.value.length;
   focusInput(length)
 
-  // if (!otpValues.value[index] && index > 0) {
-  //   focusInput(index - 1);
-  // }
+  //  if (!otpValues.value[index] && index > 0) {
+  //    focusInput(index - 1);
+  //  }
   
   // else if (otpValues.value[index] && index < numInputs.value - 1) {
   //   focusInput(index + 1); 
@@ -138,6 +149,9 @@ const handlePaste = (event) => {
 </script>
 
 <style scoped>
+input:focus {
+  border: 2px solid blue; 
+}
 .otp-input {
   width: 50px;
   text-align: center;
