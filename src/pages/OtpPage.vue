@@ -56,6 +56,7 @@
               @paste="handlePaste"
                @keydown.backspace="handleBackspace(index - 1, $event)"
                @keydown="handleKeyDown(index - 1, $event)"
+               @focus="selectAllValue(index - 1)"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
@@ -97,9 +98,18 @@ const deleteOtpp = () => {
   value.value = "";
 };
 const handleBackspace = (index, event) => {
-  if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
-    focusInput(index - 1);
-    event.preventDefault(); 
+  if (event.key === 'Backspace') {
+    if (!otpValues.value[index] && index > 0) {
+      otpValues.value[index - 1] = ''; 
+      focusInput(index - 1);
+      event.preventDefault(); 
+    } else {
+      otpValues.value[index] = ''; 
+      value.value = otpValues.value.join(''); 
+      if (index > 0) {
+        focusInput(index); 
+      }
+    }
   }
 };
 const handleKeyDown = (index, event) => {
@@ -113,10 +123,15 @@ const handleKeyDown = (index, event) => {
   }
   if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
     focusInput(index - 1);
-    event.preventDefault(); // Ngăn chặn hành động mặc định của phím Backspace
+    event.preventDefault();
   }
 };
-
+const selectAllValue = (index) => {
+  const inputs = document.querySelectorAll('.duoc-nhap');
+  if (inputs[index]) {
+    inputs[index].select(); // Chọn toàn bộ nội dung trong input khi được focus
+  }
+};
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
