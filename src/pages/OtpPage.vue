@@ -12,7 +12,6 @@
               type="number"
               min="0"
               max="40"
-              oninput="if(this.value > 40) this.value = 40;"
             />
           </div>
           <div class="form-group">
@@ -54,9 +53,9 @@
               v-model="otpValues[index - 1]"
               @input="updateValueOtp(index - 1)"
               @paste="handlePaste"
-               @keydown.backspace="handleBackspace(index - 1, $event)"
-               @keydown="handleKeyDown(index - 1, $event)"
-               @focus="selectAllValue(index - 1)"
+              @keydown.backspace="handleBackspace(index - 1, $event)"
+              @keydown="handleKeyDown(index - 1, $event)"
+              @focus="selectAllValue(index - 1)"
             />
             <span v-if="index !== numInputs">{{ separator }}</span>
           </div>
@@ -97,37 +96,37 @@ watch(numInputs, (newValue) => {
 const deleteOtpp = () => {
   value.value = "";
 };
+
 const handleBackspace = (index, event) => {
-  if (event.key === 'Backspace') {
-    if (!otpValues.value[index] && index > 0) {
-      otpValues.value[index - 1] = ''; 
+  if (event.key === "Backspace") {
+    if (otpValues.value[index]) {
+      otpValues.value[index] = "";
+      value.value = otpValues.value.join("");
+      focusInput(index);
+      event.preventDefault();
+    } else if (index > 0) {
       focusInput(index - 1);
-      event.preventDefault(); 
-    } else {
-      otpValues.value[index] = ''; 
-      value.value = otpValues.value.join(''); 
-      if (index > 0) {
-        focusInput(index); 
-      }
+      event.preventDefault();
     }
   }
 };
+
 const handleKeyDown = (index, event) => {
-  if (event.key === 'ArrowRight' && index < numInputs.value - 1) {
+  if (event.key === "ArrowRight" && index < numInputs.value - 1) {
     focusInput(index + 1);
     event.preventDefault();
   }
-  if (event.key === 'ArrowLeft' && index > 0) {
+  if (event.key === "ArrowLeft" && index > 0) {
     focusInput(index - 1);
-    event.preventDefault(); 
+    event.preventDefault();
   }
-  if (event.key === 'Backspace' && !otpValues.value[index] && index > 0) {
+  if (event.key === "Backspace" && !otpValues.value[index] && index > 0) {
     focusInput(index - 1);
     event.preventDefault();
   }
 };
 const selectAllValue = (index) => {
-  const inputs = document.querySelectorAll('.duoc-nhap');
+  const inputs = document.querySelectorAll(".duoc-nhap");
   if (inputs[index]) {
     inputs[index].select(); // Chọn toàn bộ nội dung trong input khi được focus
   }
@@ -136,30 +135,27 @@ const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
 };
 
-
 const updateValueOtp = (index) => {
-  value.value = otpValues.value.join('');
+  value.value = otpValues.value.join("");
   let length = value.value.length;
-  focusInput(length)
+  focusInput(length).select();
 
   //  if (!otpValues.value[index] && index > 0) {
   //    focusInput(index - 1);
   //  }
-  
+
   // else if (otpValues.value[index] && index < numInputs.value - 1) {
-  //   focusInput(index + 1); 
+  //   focusInput(index + 1);
   // }
 };
 
 const focusInput = (index) => {
-  const inputs = document.querySelectorAll('.duoc-nhap');
+  const inputs = document.querySelectorAll(".duoc-nhap");
   if (inputs[index]) {
     inputs[index].focus();
     inputs[index].select(); // Chọn toàn bộ nội dung trong input
   }
 };
-
-
 
 const handlePaste = (event) => {
   const pastedText = event.clipboardData.getData("text").split("");
@@ -169,7 +165,7 @@ const handlePaste = (event) => {
 
 <style scoped>
 input:focus {
-  border: 2px solid blue; 
+  border: 2px solid blue;
 }
 .otp-input {
   width: 50px;
