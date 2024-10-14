@@ -10,13 +10,13 @@
               class="form-control"
               v-model.number="numInputs"
               type="number"
-              min="0"
+              min="1"
               max="40"
             />
           </div>
           <div class="form-group">
             <label>separator</label>
-            <input type="text" v-model="separator" class="form-control" maxlength="1" />
+            <input type="text" v-model="separator" class="form-control dau" maxlength="1" />
           </div>
           <div class="form-group">
             <label>Value</label>
@@ -44,22 +44,16 @@
       </div>
       <div class="col-md-6 da-nhap">
         <h4>Mã OTP đã nhập</h4>
-        <div class="otp-display">
-          <div class="bao" v-for="index in numInputs" :key="index">
-            <input
-              class="duoc-nhap"
-              maxlength="1"
-              :type="typeInput"
-              v-model="otpValues[index - 1]"
-              @input="updateValueOtp(index - 1)"
-              @paste="handlePaste"
-              @keydown.backspace="handleBackspace(index - 1, $event)"
-              @keydown="handleKeyDown(index - 1, $event)"
-              @focus="selectAllValue(index - 1)"
-            />
-            <span v-if="index !== numInputs">{{ separator }}</span>
-          </div>
-        </div>
+        <OtpInput
+          :length="numInputs"
+          :separator="separator"
+          v-model:otpValues="otpValues"
+          :typeInput="typeInput"
+          :disabled="false"
+          :bgColor="'#D3D3D3'"
+          :baseColor="'#f0f0f0'"
+          :color="'#000000'"
+        />
         <button type="button" class="btn btn-primary" @click="deleteOtpp">Clear</button>
         <button
           type="button"
@@ -75,91 +69,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import OtpInput from '@/components/OtpInput.vue';
+import { ref, watch } from 'vue';
 
-const numInputs = ref(4);
+const numInputs = ref(5);
 const separator = ref("-");
 const value = ref("");
-const otpValues = ref(Array(numInputs.value).fill("")); //vdu ['', '', '', '']
-console.log(otpValues, "otpValues");
-console.log(value, "v");
+const otpValues = ref(Array(numInputs.value).fill("")); 
 const typeInput = ref("text");
 
-watch(value, (newValue) => {
-  otpValues.value = newValue.split("").slice(0, numInputs.value);
+watch(otpValues, (newValues) => {
+  value.value = newValues.join(""); 
 });
+
+watch(value, (newValue) => {
+  otpValues.value = newValue.split("").slice(0, numInputs.value); 
+});
+
 watch(numInputs, (newValue) => {
   if (newValue > 40) {
     numInputs.value = 40;
   }
+  otpValues.value = Array(numInputs.value).fill(""); 
 });
+
 const deleteOtpp = () => {
-  value.value = "";
+  value.value = ""; 
 };
 
-const handleBackspace = (index, event) => {
-  if (event.key === "Backspace") {
-    if (otpValues.value[index]) {
-      otpValues.value[index] = "";
-      value.value = otpValues.value.join("");
-      focusInput(index);
-      event.preventDefault();
-    } else if (index > 0) {
-      focusInput(index - 1);
-      event.preventDefault();
-    }
-  }
-};
-
-const handleKeyDown = (index, event) => {
-  if (event.key === "ArrowRight" && index < numInputs.value - 1) {
-    focusInput(index + 1);
-    event.preventDefault();
-  }
-  if (event.key === "ArrowLeft" && index > 0) {
-    focusInput(index - 1);
-    event.preventDefault();
-  }
-  if (event.key === "Backspace" && !otpValues.value[index] && index > 0) {
-    focusInput(index - 1);
-    event.preventDefault();
-  }
-};
-const selectAllValue = (index) => {
-  const inputs = document.querySelectorAll(".duoc-nhap");
-  if (inputs[index]) {
-    inputs[index].select(); // Chọn toàn bộ nội dung trong input khi được focus
-  }
-};
 const getOtp = () => {
   alert(`Mã OTP là ${value.value}`);
-};
-
-const updateValueOtp = (index) => {
-  value.value = otpValues.value.join("");
-  let length = value.value.length;
-  focusInput(length).select();
-
-  //  if (!otpValues.value[index] && index > 0) {
-  //    focusInput(index - 1);
-  //  }
-
-  // else if (otpValues.value[index] && index < numInputs.value - 1) {
-  //   focusInput(index + 1);
-  // }
-};
-
-const focusInput = (index) => {
-  const inputs = document.querySelectorAll(".duoc-nhap");
-  if (inputs[index]) {
-    inputs[index].focus();
-    inputs[index].select(); // Chọn toàn bộ nội dung trong input
-  }
-};
-
-const handlePaste = (event) => {
-  const pastedText = event.clipboardData.getData("text").split("");
-  otpValues.value = pastedText.slice(0, numInputs.value); // Lấy từ vị trí đầu tiên (0) đến vị trí bằng giá trị của numInputs
 };
 </script>
 
@@ -167,42 +106,9 @@ const handlePaste = (event) => {
 input:focus {
   border: 2px solid blue;
 }
-.otp-input {
-  width: 50px;
-  text-align: center;
-  margin-bottom: 10px;
-}
-.otp-display {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto;
-  margin-top: 20px;
-}
-.bao {
-  margin-bottom: 13px;
-}
-.otp-display span {
-  font-size: 40px;
-}
-.otp-box {
-  border: 1px solid #ccc;
-  padding: 15px;
-  width: 50px;
-  text-align: center;
-  font-size: 20px;
-}
-#inputType {
-  margin-left: 10px;
-}
 .btn-primary {
   margin-left: 10px;
   margin-top: 20px;
 }
-.otp-display .duoc-nhap {
-  width: 60px;
-  height: 60px;
-  border: 1px solid #ccc;
-  text-align: center;
-  font-size: 24px;
-  margin: 0 18px 0 5px;
-}
+
 </style>
