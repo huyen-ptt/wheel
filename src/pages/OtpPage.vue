@@ -16,7 +16,12 @@
           </div>
           <div class="form-group">
             <label>separator</label>
-            <input type="text" v-model="separator" class="form-control dau" maxlength="1" />
+            <input
+              type="text"
+              v-model="separator"
+              class="form-control dau"
+              maxlength="1"
+            />
           </div>
           <div class="form-group">
             <label>Value</label>
@@ -50,9 +55,9 @@
           v-model:otpValues="otpValues"
           :typeInput="typeInput"
           :disabled="false"
-          :bgColor="'#D3D3D3'"
-          :baseColor="'#f0f0f0'"
-          :color="'#000000'"
+          :bgColor="Bg"
+          :baseColor="border"
+          :color="colorInput"
         />
         <button type="button" class="btn btn-primary" @click="deleteOtpp">Clear</button>
         <button
@@ -63,38 +68,47 @@
         >
           Get OTP
         </button>
+        <button @click="changeColor('#e0e0e0')" class="btn btn-primary">
+          Đổi màu nền
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import OtpInput from '@/components/OtpInput.vue';
-import { ref, watch } from 'vue';
+import OtpInput from "@/components/OtpInput.vue";
+import { ref, watch } from "vue";
+const Bg = ref('#D3D3D3');
+const border = ref('#f0f0f0');
+const colorInput = ref('#000000');
+
 
 const numInputs = ref(5);
 const separator = ref("-");
 const value = ref("");
-const otpValues = ref(Array(numInputs.value).fill("")); 
+const otpValues = ref(Array(numInputs.value).fill(""));
 const typeInput = ref("text");
 
 watch(otpValues, (newValues) => {
-  value.value = newValues.join(""); 
+  value.value = newValues.join("");
 });
 
 watch(value, (newValue) => {
-  otpValues.value = newValue.split("").slice(0, numInputs.value); 
+  otpValues.value = newValue.split("").slice(0, numInputs.value);
 });
 
 watch(numInputs, (newValue) => {
   if (newValue > 40) {
     numInputs.value = 40;
   }
-  otpValues.value = Array(numInputs.value).fill(""); 
+  otpValues.value = Array(numInputs.value).fill("");
 });
-
+const changeColor = (color) => {
+     Bg.value = color;
+};
 const deleteOtpp = () => {
-  value.value = ""; 
+  value.value = "";
 };
 
 const getOtp = () => {
@@ -110,5 +124,4 @@ input:focus {
   margin-left: 10px;
   margin-top: 20px;
 }
-
 </style>

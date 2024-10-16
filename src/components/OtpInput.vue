@@ -1,19 +1,18 @@
 <template>
   <div class="otp-display">
-    <div class="bao" v-for="index in length" :key="index">
+    <div class="bao" v-for="(number, index) in length" :key="index">
       <input
         class="duoc-nhap"
         :maxlength="1"
         :type="typeInput"
-        v-model="otpValues[index - 1]"
-        @input="handleInput(index - 1)"
+        v-model="otpValues[index]"
+        @input="handleInput(index)"
         @paste="handlePaste"
-        @keydown.backspace="handleBackspace(index - 1, $event)"
-        @keydown="handleKeyDown(index - 1, $event)"
+        @keydown.backspace="handleBackspace(index, $event)"
+        @keydown="handleKeyDown(index, $event)"
         @focus="selectAllValue($event)"
         :disabled="disabled"
-        :autofocus="index === 1"
-        
+        :autofocus="index === 0"
         :style="inputStyles"
       />
       <span v-if="index !== length" class="dau">{{ separator }}</span>
@@ -22,10 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, computed, toRef } from "vue";
 
 const props = defineProps({
-
   separator: {
     type: String,
     default: "-",
@@ -44,64 +42,68 @@ const props = defineProps({
   },
   length: {
     type: Number,
-    required: true, 
+    required: true,
   },
   baseColor: {
     type: String,
-    default: '#f0f0f0',
+    default: undefined,
   },
   bgColor: {
     type: String,
-    default: '#D3D3D3',
+    default: undefined,
   },
   color: {
     type: String,
-    default: '#000000',
+    default: undefined,
   },
-  
 });
 
+const separator = toRef(props, 'separator');
+const otpValues = toRef(props, 'otpValues');
+const typeInput = toRef(props, 'typeInput');
+const disabled = toRef(props, 'disabled');
+const length = toRef(props, 'length');
+const baseColor = toRef(props, 'baseColor');
+const bgColor = toRef(props, 'bgColor');
+const color = toRef(props, 'color');
+
 const emit = defineEmits();
-
-const inputStyles = {
-  backgroundColor: props.bgColor, 
-  color: props.color, 
-  borderColor: props.baseColor,
-};
-
+const inputStyles = computed(() => ({
+  backgroundColor: bgColor.value,
+  color: color.value,
+  borderColor: baseColor.value,
+}));
 
 const handleInput = (index) => {
-  emit("update:otpValues", [...props.otpValues]);
+  emit("update:otpValues", [...otpValues.value]);
 
-  if (props.otpValues[index].length === 1 && index < props.length - 1) {
+  if (otpValues.value[index].length === 1 && index < length.value - 1) {
     focusInput(index + 1);
   }
 };
 
-
 const handleBackspace = (index, event) => {
   if (event.key === "Backspace") {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const inputs = document.querySelectorAll(".duoc-nhap");
 
-    if (props.otpValues[index]) {
-      props.otpValues[index] = "";
-      emit("update:otpValues", [...props.otpValues]); 
+    if (otpValues.value[index]) {
+      otpValues.value[index] = "";
+      emit("update:otpValues", [...otpValues.value]);
       inputs[index].focus();
       inputs[index].select();
     } else if (index > 0) {
-      props.otpValues[index - 1] = ""; 
-      emit("update:otpValues", [...props.otpValues]); 
-      inputs[index - 1].focus(); 
-      inputs[index - 1].select(); 
+      otpValues.value[index - 1] = "";
+      emit("update:otpValues", [...otpValues.value]);
+      inputs[index - 1].focus();
+      inputs[index - 1].select();
     }
   }
 };
 
-
 const handleKeyDown = (index, event) => {
-  if (event.key === "ArrowRight" && index < props.length - 1) {
+  if (event.key === "ArrowRight" && index < length.value - 1) {
     focusInput(index + 1);
     event.preventDefault();
   }
@@ -115,7 +117,6 @@ const selectAllValue = (event) => {
   event.target.select();
 };
 
-// Focus on a specific input
 const focusInput = (index) => {
   const inputs = document.querySelectorAll(".duoc-nhap");
   if (inputs[index]) {
@@ -124,10 +125,9 @@ const focusInput = (index) => {
   }
 };
 
-// Handle paste event
 const handlePaste = (event) => {
   const pastedText = event.clipboardData.getData("text").split("");
-  const newValues = pastedText.slice(0, props.length);
+  const newValues = pastedText.slice(0, length.value);
   emit("update:otpValues", newValues);
 };
 </script>
@@ -148,9 +148,8 @@ const handlePaste = (event) => {
   text-align: center;
   font-size: 24px;
 }
-.dau{
+.dau {
   font-size: 35px;
   padding-left: 23px;
-
 }
 </style>
