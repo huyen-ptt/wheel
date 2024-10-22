@@ -15,13 +15,13 @@
         :autofocus="index === 0"
         :style="inputStyles"
       />
-      <span v-if="index !== length" class="dau">{{ separator }}</span>
+      <span v-if="index !== length-1" class="dau">{{ separator }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, computed, toRef } from "vue";
+import { defineProps, defineEmits, computed, toRefs } from "vue";
 
 const props = defineProps({
   separator: {
@@ -58,14 +58,16 @@ const props = defineProps({
   },
 });
 
-const separator = toRef(props, 'separator');
-const otpValues = toRef(props, 'otpValues');
-const typeInput = toRef(props, 'typeInput');
-const disabled = toRef(props, 'disabled');
-const length = toRef(props, 'length');
-const baseColor = toRef(props, 'baseColor');
-const bgColor = toRef(props, 'bgColor');
-const color = toRef(props, 'color');
+const {
+  separator,
+  otpValues,
+  typeInput,
+  disabled,
+  length,
+  baseColor,
+  bgColor,
+  color,
+} = toRefs(props);
 
 const emit = defineEmits();
 const inputStyles = computed(() => ({
@@ -87,21 +89,14 @@ const handleBackspace = (index, event) => {
     event.preventDefault();
 
     const inputs = document.querySelectorAll(".duoc-nhap");
-
-    if (otpValues.value[index]) {
-      otpValues.value[index] = "";
-      emit("update:otpValues", [...otpValues.value]);
-      inputs[index].focus();
-      inputs[index].select();
-    } else if (index > 0) {
-      otpValues.value[index - 1] = "";
-      emit("update:otpValues", [...otpValues.value]);
+    otpValues.value[index] = "";
+    emit("update:otpValues", [...otpValues.value]);
+    if (index > 0) {
       inputs[index - 1].focus();
       inputs[index - 1].select();
     }
   }
 };
-
 const handleKeyDown = (index, event) => {
   if (event.key === "ArrowRight" && index < length.value - 1) {
     focusInput(index + 1);
