@@ -1,7 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
 import OtpPage from '@/pages/OtpPage.vue';
 import WheelPage from '@/pages/WheelPage.vue';
-import MayTinh from '@/pages/MayTinh.vue';
+import TreePage from '@/pages/TreePage.vue';
+import CrudPage from "../pages/CrudPage.vue";
 
 
 
@@ -12,14 +13,20 @@ const routes = [
         component: WheelPage,
     },
     {
-        path: "/test",
-        name: "MayTinh",
-        component: MayTinh,
+        path: "/crud",
+        name: "CrudPage",
+        component: CrudPage,
+    },
+ 
+    {
+        path: "/otp",
+        name: "OtpPage",
+        component: OtpPage,
     },
     {
         path: "/",
-        name: "OtpPage",
-        component: OtpPage,
+        name: "TreePage",
+        component: TreePage,
     },
     
   

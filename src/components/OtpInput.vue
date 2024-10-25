@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { defineProps, defineEmits, computed, toRefs } from "vue";
 
 const props = defineProps({

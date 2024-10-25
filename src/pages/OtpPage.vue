@@ -76,7 +76,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import OtpInput from "@/components/OtpInput.vue";
 import { ref, watch } from "vue";
 const Bg = ref('#D3D3D3');
