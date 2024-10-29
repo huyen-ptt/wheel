@@ -12,34 +12,40 @@ const treeData = ref([
   {
     id: 1,
     name: "Documents",
+    isExpand: false,
     children: [
       {
         id: 2,
         name: "Work",
+        isExpand: false,
         children: [
-          { id: 3, name: "Expenses.doc", children: [] },
-          { id: 4, name: "Resume.doc", children: [] },
+          { id: 3, name: "Expenses.doc", isExpand: false, children: [] },
+          { id: 4, name: "Resume.doc", isExpand: false, children: [] },
         ],
       },
       {
         id: 5,
         name: "Home",
-        children: [{ id: 6, name: "Invoices.txt", children: [] }],
+        isExpand: false,
+        children: [{ id: 6, name: "Invoices.txt", isExpand: false, children: [] }],
       },
     ],
   },
   {
     id: 6,
     name: "Events",
+    isExpand: false,
     children: [
-      { id: 7, name: "Meeting", children: [] },
-      { id: 8, name: "Product Launch", children: [] },
-      { id: 9, name: "Product Launch", children: [] },
+      { id: 7, name: "Meeting", isExpand: false, children: [] },
+      { id: 8, name: "Product Launch", isExpand: false, children: [] },
+      { id: 9, name: "Conference", isExpand: false, children: [] },
     ],
   },
 ]);
 </script>
 
 <style scoped>
-/* Thêm CSS tùy chỉnh nếu cần */
+.container {
+  padding: 20px;
+}
 </style>
