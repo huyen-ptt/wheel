@@ -33,6 +33,11 @@ const toggle = (node) => {
 </script>
 
 <style scoped>
+.open{
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 0;
+}
 ul {
   list-style-type: none;
   margin-left: 20px;
