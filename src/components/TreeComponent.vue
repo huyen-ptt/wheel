@@ -1,15 +1,13 @@
 <template>
-
   <ul>
     <li v-for="(node, index) in tree" :key="node.id" class="node-tree">
       <div
         class="node-content"
         @mouseover="node.isHovering = true"
         @mouseleave="node.isHovering = false"
-        :class="{ 'node-hover': node.isHovering }"
+        :class="{ 'node-hover': node.isHovering  }"
       >
         <span @click="toggle(node)" class="toggle-icon">
-      
           <div v-if="node.loading" class="loading-spinner"></div>
           <i
             v-else-if="node.children && node.children.length"
@@ -58,20 +56,27 @@ const toggle = (node) => {
 ul {
   list-style-type: none;
   margin-left: 20px;
+  user-select: none;
 }
 .toggle-icon {
   cursor: pointer;
   margin-right: 5px;
   position: relative;
+  user-select: none;
 }
 .node-tree .node-content {
   padding: 5px;
   transition: background-color 0.3s;
+  position: relative;
 }
+
 .node-hover {
   background-color: aqua;
 }
 .loading-spinner {
+  position: absolute;
+  left: 10px;
+  top: 2px;
   width: 19px;
   height: 17px;
   border: 2px solid transparent;
@@ -79,11 +84,24 @@ ul {
   border-radius: 50%;
   animation: spin-cd9f0a55 0.8s linear infinite;
   position: absolute;
-  left: -19px;
+  left: -22px;
   top: 0%;
   transform: translateY(-50%);
 }
-
+.fa-minus {
+  width: 20px;
+  height: 17px;
+  position: absolute;
+  left: -22px;
+  top: 1px;
+}
+.fa-plus {
+  width: 20px;
+  height: 17px;
+  position: absolute;
+  left: -18px;
+  top: 2px;
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);
