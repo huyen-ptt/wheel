@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <button @click="openTree" class="open">Mở tất cả</button>
-    <button @click="closeTree" class="close1">Đóng tất cả</button>
+    <button @click="openAllTree" class="open">Mở tất cả</button>
+    <button @click="closeAllTree" class="close1">Đóng tất cả</button>
+   
     <tree-component :tree="treeData" />
   </div>
 </template>
@@ -60,11 +61,11 @@ const treeData = ref([
   },
 ]);
 
-const openTree = () => {
+const openAllTree  = () => {
   toggleNodes(treeData.value, true);
 };
 
-const closeTree = () => {
+const closeAllTree = () => {
   toggleNodes(treeData.value, false);
 };
 
@@ -76,6 +77,7 @@ const toggleNodes = (nodes, expand) => {
     }
   });
 };
+
 </script>
 <style scoped>
 .container {

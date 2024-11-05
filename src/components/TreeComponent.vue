@@ -1,16 +1,31 @@
 <template>
+
   <ul>
     <li v-for="(node, index) in tree" :key="node.id" class="node-tree">
-      <span @click="toggle(node)" class="toggle-icon">
-        <i
-          v-if="node.children && node.children.length"
-          :class="node.isExpand ? 'fas fa-minus' : 'fas fa-plus'"
-        ></i>
-      </span>
-      <span class="label">
-        <i :class="node.children && node.children.length ? 'fas fa-folder' : 'fas fa-file-alt'" class="icon"></i>
-        {{ node.name }}
-      </span>
+      <div
+        class="node-content"
+        @mouseover="node.isHovering = true"
+        @mouseleave="node.isHovering = false"
+        :class="{ 'node-hover': node.isHovering }"
+      >
+        <span @click="toggle(node)" class="toggle-icon">
+          <!-- Show spinner when loading, otherwise show the icon -->
+          <div v-if="node.loading" class="loading-spinner"></div>
+          <i
+            v-else-if="node.children && node.children.length"
+            :class="node.isExpand ? 'fas fa-minus' : 'fas fa-plus'"
+          ></i>
+        </span>
+        <span class="label">
+          <i
+            :class="
+              node.children && node.children.length ? 'fas fa-folder' : 'fas fa-file-alt'
+            "
+            class="icon"
+          ></i>
+          {{ node.name }}
+        </span>
+      </div>
       <tree-component
         v-if="node.children && node.children.length && node.isExpand"
         :tree="node.children"
@@ -26,18 +41,20 @@ const props = defineProps({
   tree: Array,
 });
 
-//  thay đổi trạng thái mở/đóng của node
 const toggle = (node) => {
-  node.isExpand = !node.isExpand; 
+  if (node.children && node.children.length) {
+    node.loading = true;
+    setTimeout(() => {
+      node.isExpand = !node.isExpand;
+      node.loading = false;
+    }, 1000);
+  } else {
+    node.isExpand = !node.isExpand;
+  }
 };
 </script>
 
 <style scoped>
-.open{
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 0;
-}
 ul {
   list-style-type: none;
   margin-left: 20px;
@@ -45,8 +62,34 @@ ul {
 .toggle-icon {
   cursor: pointer;
   margin-right: 5px;
+  position: relative; /* For spinner positioning */
 }
-.node-icon {
-  margin-right: 5px;
+.node-tree .node-content {
+  padding: 5px;
+  transition: background-color 0.3s;
+}
+.node-hover {
+  background-color: aqua;
+}
+.loading-spinner {
+  width: 19px;
+  height: 17px;
+  border: 2px solid transparent;
+  border-top: 2px solid rgb(168 28 28);
+  border-radius: 50%;
+  animation: spin-cd9f0a55 0.8s linear infinite;
+  position: absolute;
+  left: -19px;
+  top: 0%;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
