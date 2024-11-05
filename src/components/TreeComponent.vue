@@ -9,7 +9,7 @@
         :class="{ 'node-hover': node.isHovering }"
       >
         <span @click="toggle(node)" class="toggle-icon">
-          <!-- Show spinner when loading, otherwise show the icon -->
+      
           <div v-if="node.loading" class="loading-spinner"></div>
           <i
             v-else-if="node.children && node.children.length"
@@ -62,7 +62,7 @@ ul {
 .toggle-icon {
   cursor: pointer;
   margin-right: 5px;
-  position: relative; /* For spinner positioning */
+  position: relative;
 }
 .node-tree .node-content {
   padding: 5px;
