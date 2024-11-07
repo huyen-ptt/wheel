@@ -5,8 +5,10 @@
         class="node-content"
         @mouseover="node.isHovering = true"
         @mouseleave="node.isHovering = false"
-        :class="{ 'node-hover': node.isHovering  }"
+        @click="activeNode = node.id"
+        :class="{ 'node-hover': node.isHovering,  }"
       >
+      <!-- 'active-node': activeNode === node.id -->
         <span @click="toggle(node)" class="toggle-icon">
           <div v-if="node.loading" class="loading-spinner"></div>
           <i
@@ -14,7 +16,7 @@
             :class="node.isExpand ? 'fas fa-minus' : 'fas fa-plus'"
           ></i>
         </span>
-        <span class="label">
+        <span @click="setActive(node)" class="label">
           <i
             :class="
               node.children && node.children.length ? 'fas fa-folder' : 'fas fa-file-alt'
@@ -33,11 +35,14 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { defineProps } from "vue";
 
 const props = defineProps({
   tree: Array,
 });
+
+const activeNode = ref(null);
 
 const toggle = (node) => {
   if (node.children && node.children.length) {
@@ -49,6 +54,10 @@ const toggle = (node) => {
   } else {
     node.isExpand = !node.isExpand;
   }
+};
+
+const setActive = (node) => {
+  activeNode.value = node.id;
 };
 </script>
 
@@ -73,6 +82,9 @@ ul {
 .node-hover {
   background-color: aqua;
 }
+.active-node {
+  background-color: #add8e6; /* Màu nền cho item đang active */
+}
 .loading-spinner {
   position: absolute;
   left: 10px;
@@ -82,9 +94,9 @@ ul {
   border: 2px solid transparent;
   border-top: 2px solid rgb(168 28 28);
   border-radius: 50%;
-  animation: spin-cd9f0a55 0.8s linear infinite;
+  animation: spin 0.8s linear infinite;
   position: absolute;
-  left: -22px;
+  left: -19px;
   top: 0%;
   transform: translateY(-50%);
 }
@@ -92,7 +104,7 @@ ul {
   width: 20px;
   height: 17px;
   position: absolute;
-  left: -22px;
+  left: -19px;
   top: 1px;
 }
 .fa-plus {
