@@ -3,20 +3,19 @@
     <li v-for="(node, index) in tree" :key="node.id" class="node-tree">
       <div
         class="node-content"
-        @mouseover="node.isHovering = true"
-        @mouseleave="node.isHovering = false"
-        @click="activeNode = node.id"
-        :class="{ 'node-hover': node.isHovering,  }"
+        :class="{
+          'active-node': node.isActive,  // Áp dụng class khi isActive = true
+        }"
+        @click="setActive(node)"
       >
-      <!-- 'active-node': activeNode === node.id -->
-        <span @click="toggle(node)" class="toggle-icon">
+        <span @click.stop="toggle(node)" class="toggle-icon">
           <div v-if="node.loading" class="loading-spinner"></div>
           <i
             v-else-if="node.children && node.children.length"
             :class="node.isExpand ? 'fas fa-minus' : 'fas fa-plus'"
           ></i>
         </span>
-        <span @click="setActive(node)" class="label">
+        <span class="label">
           <i
             :class="
               node.children && node.children.length ? 'fas fa-folder' : 'fas fa-file-alt'
@@ -34,6 +33,7 @@
   </ul>
 </template>
 
+
 <script setup>
 import { ref } from "vue";
 import { defineProps } from "vue";
@@ -42,25 +42,30 @@ const props = defineProps({
   tree: Array,
 });
 
-const activeNode = ref(null);
-
 const toggle = (node) => {
   if (node.children && node.children.length) {
     node.loading = true;
     setTimeout(() => {
       node.isExpand = !node.isExpand;
       node.loading = false;
-    }, 1000);
-  } else {
-    node.isExpand = !node.isExpand;
+    }, 500);
   }
 };
 
 const setActive = (node) => {
-  activeNode.value = node.id;
+  if (node.isActive) {
+    node.isActive = false;  // Nếu node đã active, bỏ active
+  } else {
+    // Đặt tất cả node khác thành không active
+    props.tree.forEach((n) => {
+      if (n.id !== node.id) {
+        n.isActive = false;
+      }
+    });
+    node.isActive = true;  // Đặt node này làm active
+  }
 };
 </script>
-
 <style scoped>
 ul {
   list-style-type: none;
@@ -78,12 +83,8 @@ ul {
   transition: background-color 0.3s;
   position: relative;
 }
-
-.node-hover {
-  background-color: aqua;
-}
 .active-node {
-  background-color: #add8e6; /* Màu nền cho item đang active */
+  background-color: #767e81; /* Áp dụng màu nền khi node được chọn */
 }
 .loading-spinner {
   position: absolute;
@@ -92,7 +93,7 @@ ul {
   width: 19px;
   height: 17px;
   border: 2px solid transparent;
-  border-top: 2px solid rgb(168 28 28);
+  border-top: 2px solid rgb(10, 10, 10);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   position: absolute;
@@ -100,19 +101,13 @@ ul {
   top: 0%;
   transform: translateY(-50%);
 }
-.fa-minus {
+.fa-minus,
+.fa-plus {
   width: 20px;
   height: 17px;
   position: absolute;
   left: -19px;
   top: 1px;
-}
-.fa-plus {
-  width: 20px;
-  height: 17px;
-  position: absolute;
-  left: -18px;
-  top: 2px;
 }
 @keyframes spin {
   0% {
