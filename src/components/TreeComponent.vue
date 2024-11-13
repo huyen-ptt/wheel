@@ -48,7 +48,6 @@ const toggle = (node) => {
     setTimeout(() => {
       node.isExpand = !node.isExpand;
       node.loading = false;
-      // debugger
     }, 500);
   }
 };
