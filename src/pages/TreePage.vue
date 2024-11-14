@@ -104,17 +104,18 @@ const filterTree = (nodes, query) => {
   return nodes
     .map((node) => {
       if (node.name.toLowerCase().includes(query.toLowerCase())) {
-        return { ...node,isExpand: true }; // Giữ nguyên trạng thái của node
+        return node; // Trả về node gốc nếu khớp với từ khóa
       }
       if (node.children && node.children.length > 0) {
         const filteredChildren = filterTree(node.children, query);
         if (filteredChildren.length > 0) {
-          return { ...node,isExpand: true ,children: filteredChildren }; // Lọc con mà không thay đổi trạng thái node
+          node.children = filteredChildren;// Lọc con mà không thay đổi trạng thái node
+          return node; 
         }
       }
       return null;
     })
-    .filter((node) => node !== null);
+    .filter((node) => node !== null);  // Bỏ các node không phù hợp
 };
 
 
