@@ -90,10 +90,13 @@ ul {
   transition: background-color 0.3s;
   position: relative;
   display: flex;
+  width: 300px;
+  border-radius: 6px;
 }
 .active-node {
   background-color: black;
   color: white;
+
 }
 .active-node .loading-spinner{
   border-top: 2px solid rgb(255, 255, 255);
