@@ -11,7 +11,10 @@
     <button @click="openAllTree" class="open">Mở tất cả</button>
     <button @click="closeAllTree" class="close1">Đóng tất cả</button>
 
-    <tree-component :tree="filteredTree" />
+    <tree-component :tree="filteredTree"
+    :selecttedNode="selecttedNode"
+    @on-select="onSelectNode"
+     @emit_resetActive="resetAllActiveTree(filteredTree, $event)"/>
   </div>
 </template>
 
@@ -65,7 +68,7 @@ const treeData = ref([
     ],
   },
   {
-    id: 6,
+    id: 777,
     name: "Events",
     isExpand: false,
     isActive: false,
@@ -79,6 +82,7 @@ const treeData = ref([
 
 
 const searchItemTree = ref("");
+const selecttedNode = ref(null)
 
 // Mở tất cả cây
 const openAllTree = () => {
@@ -89,6 +93,21 @@ const openAllTree = () => {
 const closeAllTree = () => {
   toggleNodes(treeData.value, false);
 };
+
+const onSelectNode = (node) => {
+  selecttedNode.value = node;
+}
+
+const resetAllActiveTree = (nodes, nodeEmited) => {
+  nodes.forEach((node) => {
+    if (node.id !== nodeEmited.id) {
+      node.isActive = false;
+    }
+    if (node.children && node.children.length > 0) {
+      resetAllActiveTree(node.children, nodeEmited);
+    }
+  });
+}
 
 const toggleNodes = (nodes, expand) => {
   nodes.forEach((node) => {

@@ -1,11 +1,12 @@
 <template>
   <ul>
     <li v-for="(node, index) in tree" :key="node.id" class="node-tree">
+      <!-- :class="{ 'active-node': node.isActive }" -->
       <div
         class="node-content"
          @mouseover="node.isHovering = true"
         @mouseleave="node.isHovering = false"
-        :class="{ 'active-node': node.isActive }"
+        :class="{ 'active-node': selecttedNode && node.id === selecttedNode.id }"
         @click="setActive(node)"
       >
         <span @click.stop="toggle(node)" class="toggle-icon">
@@ -28,7 +29,9 @@
       <tree-component
         v-if="node.children && node.children.length && node.isExpand"
         :tree="node.children"
-        @emit_resetActive="emitResetActive()"
+        :selecttedNode="selecttedNode"
+        @on-select="emitResetActive"
+        @emit_resetActive="emitResetActive"
       />
     </li>
   </ul>
@@ -39,8 +42,14 @@ import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   tree: Array,
+  selecttedNode: {
+    type: Object,
+    default() {
+      return null
+    }
+  }
 });
-const emit = defineEmits();
+const emit = defineEmits(['emit_resetActive', 'on-select']);
 
 const toggle = (node) => {
   if (node.children && node.children.length) {
@@ -53,23 +62,15 @@ const toggle = (node) => {
 };
 
 const setActive = (node) => {
-  onResetActive(props.tree);
-  console.log(props.tree);
-  emit("emit_resetActive", node);
-  node.isActive = true;
+  // emit("emit_resetActive", node);
+  emit("on-select", node);
+  // node.isActive = true;
 };
 
-const onResetActive = (tree) => {
-  tree.forEach((node) => {
-    node.isActive = false;
-    if (node.children && node.children.length > 0) {
-      onResetActive(node.children);
-    }
-  });
-};
 
-const emitResetActive = () => {
-  onResetActive(props.tree);
+const emitResetActive = (node) => {
+  // emit("emit_resetActive", node);
+  emit("on-select", node);
 };
 </script>
 
